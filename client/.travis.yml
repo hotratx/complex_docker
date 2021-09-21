@@ -1,0 +1,23 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t mgviero/docker-vue -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run mgviero/docker-vue npm run lint -f ./client/Dockerfile.dev
+
+after_success:
+  - docker build -t mgviero/multi-client ./client
+  - docker build -t mgviero/multi-nginx ./nginx
+  - docker build -t mgviero/multi-server ./server
+  - docker build -t mgviero/multi-worker ./worker
+  # Login in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push to docker hub
+  - docker push mgviero/complex-client
+  - docker push mgviero/complex-nginx
+  - docker push mgviero/complex-server
+  - docker push mgviero/complex-worker
+
