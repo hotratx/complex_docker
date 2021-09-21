@@ -14,7 +14,7 @@ after_success:
   - docker build -t mgviero/complex-server ./server
   - docker build -t mgviero/complex-worker ./worker
   # Login in to the docker CLI
-  - echo "$DOCKER_PASSWORD" | docker login --username hotrats --password-stdin
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 
   # Take those images and push to docker hub
   - docker push mgviero/complex-client
