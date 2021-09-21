@@ -3,16 +3,16 @@ services:
   - docker
 
 before_install:
-  - docker build -t mgviero/docker-vue -f ./client/Dockerfile.dev ./client
+  - docker build -t mgviero/vue-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run mgviero/client-vue npm run lint -f ./client/Dockerfile.dev
+  - docker run -e CI=true mgviero/vue-test npm run lint
 
 after_success:
-  - docker build -t mgviero/multi-client ./client
-  - docker build -t mgviero/multi-nginx ./nginx
-  - docker build -t mgviero/multi-server ./server
-  - docker build -t mgviero/multi-worker ./worker
+  - docker build -t mgviero/complex-client ./client
+  - docker build -t mgviero/complex-nginx ./nginx
+  - docker build -t mgviero/complex-server ./server
+  - docker build -t mgviero/complex-worker ./worker
   # Login in to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   # Take those images and push to docker hub
@@ -20,4 +20,3 @@ after_success:
   - docker push mgviero/complex-nginx
   - docker push mgviero/complex-server
   - docker push mgviero/complex-worker
-
