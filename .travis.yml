@@ -9,20 +9,17 @@ script:
   - docker run -e CI=true mgviero/vue-test npm run lint
 
 after_success:
-  - docker build -t mgviero/complex-client ./client
-  - docker build -t mgviero/complex-nginx ./nginx
-  - docker build -t mgviero/complex-server ./server
-  - docker build -t mgviero/complex-worker ./worker
+  - docker build -t complex-client ./client
+  - docker build -t complex-nginx ./nginx
+  - docker build -t complex-server ./server
+  - docker build -t complex-worker ./worker
   # Login in to the docker CLI
-  - cat >/home/travis/.docker/config.json <<EOF
-      {
-        "DOCKER_PASSWORD": "$DOCKER_PASSWORD",
-        "DOCKER_ID":   "$DOCKER_ID"
-      }
-  EOF
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-
   # Take those images and push to docker hub
+  - docker tag complex-client mgviero/complex-client
+  - docker tag complex-nginx mgviero/complex-nginx
+  - docker tag complex-server mgviero/complex-server
+  - docker tag complex-worker mgviero/complex-worker
   - docker push mgviero/complex-client
   - docker push mgviero/complex-nginx
   - docker push mgviero/complex-server
