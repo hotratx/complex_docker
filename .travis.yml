@@ -14,6 +14,12 @@ after_success:
   - docker build -t mgviero/complex-server ./server
   - docker build -t mgviero/complex-worker ./worker
   # Login in to the docker CLI
+  - cat >/home/travis/.docker/config.json <<EOF
+      {
+        "DOCKER_PASSWORD": "$DOCKER_PASSWORD",
+        "DOCKER_ID":   "$DOCKER_ID"
+      }
+  EOF
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 
   # Take those images and push to docker hub
